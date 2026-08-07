@@ -1,0 +1,19 @@
+{
+  "name": "website-audit-tool",
+  "version": "1.0.0",
+  "description": "Scans a website URL and returns a technical/SEO/form/tracking issue report.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "express": "^4.19.2",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
+  }
+}
