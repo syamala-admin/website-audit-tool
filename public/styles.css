@@ -1,0 +1,75 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f9;
+  color: #222;
+  margin: 0;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 16px;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+form {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+form label {
+  display: none;
+}
+
+#url-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  padding: 10px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  background: #2d6cdf;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.status-error {
+  color: #c0392b;
+}
+
+.report-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.report-frame {
+  width: 100%;
+  height: 700px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 16px;
+  background: #fff;
+}
