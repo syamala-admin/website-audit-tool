@@ -4,12 +4,11 @@ const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 const app = createApp();
 
-// Application bootstrap: conditional logic ensures the HTTP listener only
-// starts when this file is executed directly, not when it is imported
-// (e.g. by tests importing createApp()).
+// Only start listening when this file is run directly (not when imported by
+// tests), so tests can import createApp() without starting a real server.
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`website-audit-tool service listening on port ${PORT}`);
+    console.log(`Website audit tool listening on port ${PORT}`);
   });
 }
 
