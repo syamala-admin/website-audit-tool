@@ -6,6 +6,7 @@ export function createAuditRoutes(controller: AuditController): Router {
 
   router.get('/', controller.getRecentAudits);
   router.post('/', controller.createAudit);
+  router.delete('/:id', controller.deleteAudit);
 
   return router;
 }

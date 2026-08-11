@@ -23,4 +23,8 @@ export class AuditService {
     const safeLimit = Math.min(limit, MAX_RECENT_AUDITS);
     return this.repository.findRecent(safeLimit);
   }
+
+  deleteAudit(id: number): boolean {
+    return this.repository.deleteById(id);
+  }
 }

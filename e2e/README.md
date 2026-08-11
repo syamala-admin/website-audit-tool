@@ -1,12 +1,12 @@
-# End-to-End Tests for Recent Audits Feature
+# End-to-End Tests for Audit Deletion
 
-These tests verify the complete user flow for saving and displaying recent audits.
+This directory contains Playwright end-to-end tests for the "Delete audit from Recent audits list" feature.
 
 ## Setup
 
-1. Install Playwright dependencies:
+1. Install Playwright and dependencies:
    ```bash
-   npm i -D @playwright/test
+   npm install -D @playwright/test
    ```
 
 2. Install the Chromium browser:
@@ -16,39 +16,42 @@ These tests verify the complete user flow for saving and displaying recent audit
 
 ## Running the Tests
 
-Start the application server first:
-```bash
-npm start
-```
-
-Then, in another terminal, run the end-to-end tests:
+Run all tests:
 ```bash
 BASE_URL=http://localhost:3000 npx playwright test
 ```
 
-### Running against a different environment
+Run tests in headed mode (with visible browser):
+```bash
+BASE_URL=http://localhost:3000 npx playwright test --headed
+```
 
-To run tests against a staging or preview deployment, set the `BASE_URL` environment variable:
+Run a specific test file:
+```bash
+BASE_URL=http://localhost:3000 npx playwright test audit-delete.e2e.js
+```
+
+Run tests against staging:
 ```bash
 BASE_URL=https://staging.example.com npx playwright test
 ```
 
-### Viewing test results
+## Viewing Test Results
 
-After the test run completes, view the HTML report:
+After tests complete, view the HTML report:
 ```bash
 npx playwright show-report
 ```
 
-This will open a browser showing detailed results, screenshots, videos, and traces for each test.
+Test artifacts (screenshots, videos, traces) are saved to `playwright-report/`.
 
-## Test Structure
+## Test Coverage
 
-Each test file matches the pattern `*.e2e.js` and verifies one acceptance criterion.
-- **audit.e2e.js** — Tests for the audit persistence and retrieval feature, including API responses and UI display behavior.
-
-## Troubleshooting
-
-- **Tests fail with "Connection refused"**: Ensure the application is running on the expected `BASE_URL` before starting tests.
-- **"No audits yet" test skips**: This is expected if audits exist in the database. The test verifies the empty state behavior and skips if data is already present.
-- **Timeout errors**: The application may take longer to process audits. Increase `waitForTimeout` values in the test if needed.
+The test suite covers the following acceptance criteria:
+1. Each audit item displays a Delete button with proper labeling
+2. DELETE /api/audits/:id returns 204 or 200 with {deleted:true}
+3. DELETE /api/audits/:id with non-existent id returns 404
+4. Clicking Delete removes audit without page reload
+5. Deleted audit does not reappear after page reload
+6. GET /api/audits excludes deleted audit
+7. Deleting last audit shows "No audits yet." empty state

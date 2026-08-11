@@ -68,6 +68,50 @@ describe('AuditService', () => {
   });
 });
 
+describe('DELETE /api/audits/:id', () => {
+  it('deletes an existing audit and returns 200 with {deleted:true}', async () => {
+    const app = buildTestApp();
+    const db = createTestDatabase();
+    const repository = new AuditRepository(db);
+    
+    const audit = repository.insert('https://example.com', 3, '2024-01-01T00:00:00.000Z');
+    
+    const service = new AuditService(repository);
+    const controller = new AuditController(service);
+    
+    const testApp = express();
+    testApp.use(express.json());
+    testApp.use('/api/audits', createAuditRoutes(controller));
+    
+    const response = await request(testApp)
+      .delete(`/api/audits/${audit.id}`)
+      .expect(200);
+    
+    expect(response.body).toEqual({ deleted: true });
+    expect(repository.findRecent(10)).toHaveLength(0);
+  });
+
+  it('returns 404 when audit does not exist', async () => {
+    const app = buildTestApp();
+    
+    const response = await request(app)
+      .delete('/api/audits/999')
+      .expect(404);
+    
+    expect(response.body).toHaveProperty('error');
+  });
+
+  it('returns 400 when id is not a positive integer', async () => {
+    const app = buildTestApp();
+    
+    const response = await request(app)
+      .delete('/api/audits/invalid')
+      .expect(400);
+    
+    expect(response.body).toHaveProperty('error');
+  });
+});
+
 describe('GET /api/audits', () => {
   it('returns an empty array when no audits exist', async () => {
     const app = buildTestApp();
