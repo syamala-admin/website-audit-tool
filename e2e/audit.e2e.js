@@ -3,8 +3,7 @@ import { test, expect } from '@playwright/test';
 const baseURL = process.env.BASE_URL || 'http://localhost:3000';
 
 test('When an audit completes, the scanned URL, timestamp, and issue count are persisted to a database record.', async ({ request }) => {
-  // First, run an audit via the UI to trigger the save
-  const page = await test.createBrowserContext().newPage();
+  // First, run an audit via the UI to trigger the save  
   await page.goto(baseURL);
 
   // Fill in the URL input and run the audit
