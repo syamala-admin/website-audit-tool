@@ -2,28 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Website Audit Tool</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recent audits</title>
 </head>
 <body>
   <main>
-    <h1>Website Audit Tool</h1>
+    <h1>Recent audits</h1>
 
-    <section id="audit-form-section">
-      <h2>Run an audit</h2>
-      <form id="audit-form">
-        <label for="url-input">Website URL</label>
-        <input type="url" id="url-input" name="url" placeholder="https://example.com" required />
-        <button type="submit">Run audit</button>
-      </form>
-      <p id="audit-status"></p>
-    </section>
+    <p data-testid="audit-count">Total audits: <span id="audit-count-value">0</span></p>
 
-    <section id="recent-audits-section">
-      <h2>Recent audits</h2>
-      <ul id="recent-audits-list"></ul>
-      <p id="no-audits-message" hidden>No audits yet.</p>
-    </section>
+    <ul id="audit-list" aria-label="Recent audits list"></ul>
   </main>
 
   <script src="/app.js"></script>
