@@ -43,11 +43,13 @@ jobs:
           node-version: '20'
       - run: npm ci || npm install
       - run: npm run lint --if-present
-  # End-to-end acceptance tests (the use cases). Heavier, so only on merges to a
-  # main branch, not every PR push. Starts the app inside the runner and drives
-  # it with Playwright, then uploads the report as an artifact (14-day retention).
+  # End-to-end acceptance tests (the use cases). Runs on the PR so a failing test
+  # is caught and fixed BEFORE merge, and again on the merge to main (the run the
+  # tool records). It's the heavy job, so cost is held down by concurrency's
+  # cancel-in-progress (a new push kills the previous PR run) and the md/docs
+  # paths-ignore above. Starts the app in the runner, drives it with Playwright,
+  # and uploads the report as an artifact (14-day retention).
   e2e:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
