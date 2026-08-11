@@ -2,6 +2,66 @@ import { test, expect } from '@playwright/test';
 
 const baseURL = process.env.BASE_URL || 'http://localhost:3000';
 
+test('Clicking Delete button removes an audit from the list immediately without page reload', async ({ page, request }) => {
+  await page.goto(baseURL);
+
+  // Create one audit
+  const urlInput = await page.getByLabel(/URL/i).or(page.locator('input[placeholder*="url" i]')).first();
+  const auditButton = await page.getByRole('button', { name: /audit|scan/i }).first();
+  await urlInput.fill('https://test.com');
+  await auditButton.click();
+  await page.waitForTimeout(1000);
+
+  // Get the delete button and click it
+  const deleteButton = await page.getByRole('button', { name: /delete/i }).first();
+  await expect(deleteButton).toHaveAttribute('aria-label', 'Delete audit');
+  
+  // Set up dialog handler to confirm deletion
+  page.once('dialog', dialog => {
+    dialog.accept();
+  });
+  
+  await deleteButton.click();
+  await page.waitForTimeout(500);
+
+  // Verify the audit is removed from the DOM
+  const listItems = await page.locator('li');
+  expect(await listItems.count()).toBe(0);
+
+  // Verify empty state is shown
+  const noAuditsMessage = await page.locator('#no-audits-message');
+  await expect(noAuditsMessage).not.toHaveAttribute('hidden', '');
+
+  await page.close();
+});
+
+test('After deleting the last audit, empty state message "No audits yet." is displayed', async ({ page, request }) => {
+  await page.goto(baseURL);
+
+  // Create one audit
+  const urlInput = await page.getByLabel(/URL/i).or(page.locator('input[placeholder*="url" i]')).first();
+  const auditButton = await page.getByRole('button', { name: /audit|scan/i }).first();
+  await urlInput.fill('https://lastaudit.com');
+  await auditButton.click();
+  await page.waitForTimeout(1000);
+
+  // Delete the audit
+  const deleteButton = await page.getByRole('button', { name: /delete/i }).first();
+  
+  page.once('dialog', dialog => {
+    dialog.accept();
+  });
+  
+  await deleteButton.click();
+  await page.waitForTimeout(500);
+
+  // Verify empty state message is displayed
+  const noAuditsMessage = await page.locator('#no-audits-message');
+  await expect(noAuditsMessage).toContainText('No audits yet.');
+
+  await page.close();
+});
+
 test('When an audit completes, the scanned URL, timestamp, and issue count are persisted to a database record.', async ({ request }) => {
   // First, run an audit via the UI to trigger the save  
   await page.goto(baseURL);

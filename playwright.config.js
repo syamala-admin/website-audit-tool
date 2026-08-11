@@ -1,6 +1,9 @@
-import { defineConfig, devices } from '@playwright/test';
+const { defineConfig, devices } = require('@playwright/test');
 
-export default defineConfig({
+const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+
+module.exports = defineConfig({
+  testDir: './e2e',
   testMatch: '**/*.e2e.js',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -11,18 +14,16 @@ export default defineConfig({
     ['json', { outputFile: 'playwright-report/results.json' }],
   ],
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: baseURL,
+    trace: 'on',
     screenshot: 'on',
     video: 'on',
-    trace: 'on',
   },
-
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-
   webServer: undefined,
 });

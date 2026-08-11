@@ -16,7 +16,40 @@ function renderAudits(audits) {
 
   audits.forEach((audit) => {
     const item = document.createElement('li');
-    item.textContent = `${audit.url} \u2014 ${audit.issueCount} issue${audit.issueCount === 1 ? '' : 's'}`;
+    const textSpan = document.createElement('span');
+    textSpan.textContent = `${audit.url} \u2014 ${audit.issueCount} issue${audit.issueCount === 1 ? '' : 's'}`;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.setAttribute('aria-label', 'Delete audit');
+    deleteBtn.style.marginLeft = '12px';
+    deleteBtn.addEventListener('click', async () => {
+      if (!confirm('Are you sure you want to delete this audit?')) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/audits/${audit.id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to delete audit');
+        }
+        
+        item.remove();
+        
+        if (recentAuditsList.children.length === 0) {
+          noAuditsMessage.hidden = false;
+        }
+      } catch (error) {
+        console.error(error);
+        auditStatus.textContent = 'Failed to delete audit. Please try again.';
+      }
+    });
+    
+    item.appendChild(textSpan);
+    item.appendChild(deleteBtn);
     recentAuditsList.appendChild(item);
   });
 }

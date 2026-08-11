@@ -47,4 +47,12 @@ export class AuditRepository {
       createdAt: row.createdAt,
     }));
   }
+
+  deleteById(id: number): boolean {
+    const result = this.db
+      .prepare('DELETE FROM audits WHERE id = ?')
+      .run(id);
+
+    return (result.changes ?? 0) > 0;
+  }
 }
