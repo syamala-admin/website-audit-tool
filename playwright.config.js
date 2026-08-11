@@ -1,18 +1,20 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env.BASE_URL || 'http://localhost:3000';
-
 export default defineConfig({
-  testDir: './e2e',
   testMatch: '**/*.e2e.js',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: 'html',
+  reporter: [
+    ['html'],
+    ['json', { outputFile: 'playwright-report/results.json' }],
+  ],
   use: {
-    baseURL,
-    trace: 'on-first-retry',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    screenshot: 'on',
+    video: 'on',
+    trace: 'on',
   },
 
   projects: [
@@ -21,4 +23,6 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+
+  webServer: undefined,
 });

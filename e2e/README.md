@@ -1,42 +1,54 @@
-# End-to-End Tests
+# End-to-End Tests for Recent Audits Feature
 
-End-to-end acceptance tests for the Website Audit Tool, using Playwright.
+These tests verify the complete user flow for saving and displaying recent audits.
 
 ## Setup
 
+1. Install Playwright dependencies:
+   ```bash
+   npm i -D @playwright/test
+   ```
+
+2. Install the Chromium browser:
+   ```bash
+   npx playwright install chromium
+   ```
+
+## Running the Tests
+
+Start the application server first:
 ```bash
-npm i -D @playwright/test
-npx playwright install chromium
+npm start
 ```
 
-## Run Tests
-
-### Against local development server (default `http://localhost:3000`):
-
+Then, in another terminal, run the end-to-end tests:
 ```bash
-npx playwright test
+BASE_URL=http://localhost:3000 npx playwright test
 ```
 
-### Against a specific URL:
+### Running against a different environment
 
+To run tests against a staging or preview deployment, set the `BASE_URL` environment variable:
 ```bash
-BASE_URL=http://staging.example.com npx playwright test
+BASE_URL=https://staging.example.com npx playwright test
 ```
 
-### Run a single test file:
+### Viewing test results
 
-```bash
-npx playwright test e2e/health-check.e2e.js
-```
-
-### View HTML report:
-
+After the test run completes, view the HTML report:
 ```bash
 npx playwright show-report
 ```
 
-## Notes
+This will open a browser showing detailed results, screenshots, videos, and traces for each test.
 
-- All test files use the `.e2e.js` suffix to avoid conflicts with Jest/Vitest unit tests.
-- Tests read `BASE_URL` from the environment, defaulting to `http://localhost:3000`.
-- Tests use Playwright's `request` fixture for API assertions and browser automation for UI tests.
+## Test Structure
+
+Each test file matches the pattern `*.e2e.js` and verifies one acceptance criterion.
+- **audit.e2e.js** — Tests for the audit persistence and retrieval feature, including API responses and UI display behavior.
+
+## Troubleshooting
+
+- **Tests fail with "Connection refused"**: Ensure the application is running on the expected `BASE_URL` before starting tests.
+- **"No audits yet" test skips**: This is expected if audits exist in the database. The test verifies the empty state behavior and skips if data is already present.
+- **Timeout errors**: The application may take longer to process audits. Increase `waitForTimeout` values in the test if needed.
