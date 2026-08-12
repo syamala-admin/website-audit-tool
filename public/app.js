@@ -4,6 +4,22 @@ const auditStatus = document.getElementById('audit-status');
 const recentAuditsList = document.getElementById('recent-audits-list');
 const noAuditsMessage = document.getElementById('no-audits-message');
 
+async function loadAuditCount() {
+  try {
+    const response = await fetch('/api/audits/count');
+    if (!response.ok) {
+      throw new Error('Failed to load audit count');
+    }
+    const data = await response.json();
+    const auditCountElement = document.getElementById('audit-count');
+    if (auditCountElement) {
+      auditCountElement.textContent = `Total audits: ${data.count}`;
+    }
+  } catch (error) {
+    console.error('Failed to load audit count', error);
+  }
+}
+
 function renderAudits(audits) {
   recentAuditsList.innerHTML = '';
 
@@ -101,21 +117,8 @@ auditForm.addEventListener('submit', async (event) => {
     auditStatus.textContent = `Audit complete: ${savedAudit.issueCount} issue(s) found.`;
     urlInput.value = '';
 
-    await async function loadAuditCount() {
-  try {
-    const response = await fetch('/api/audits/count');
-    const data = await response.json();
-    const auditCountElement = document.getElementById('audit-count');
-    if (auditCountElement) {
-      auditCountElement.textContent = `Total audits: ${data.count}`;
-    }
-  } catch (error) {
-    console.error('Failed to load audit count', error);
-  }
-}
-
-loadRecentAudits();
-loadAuditCount();
+    await loadRecentAudits();
+    await loadAuditCount();
   } catch (error) {
     console.error(error);
     auditStatus.textContent = 'Audit failed. Please try again.';
@@ -123,3 +126,4 @@ loadAuditCount();
 });
 
 loadRecentAudits();
+loadAuditCount();
