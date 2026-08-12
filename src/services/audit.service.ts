@@ -27,4 +27,8 @@ export class AuditService {
   deleteAudit(id: number): boolean {
     return this.repository.deleteById(id);
   }
+
+  getAuditCount(): number {
+    return this.repository.count();
+  }
 }

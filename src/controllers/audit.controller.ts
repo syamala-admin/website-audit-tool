@@ -60,4 +60,14 @@ export class AuditController {
       res.status(500).json({ error: 'Failed to delete audit' });
     }
   };
+
+  getAuditCount = (req: Request, res: Response): void => {
+    try {
+      const count = this.service.getAuditCount();
+      res.status(200).json({ count });
+    } catch (error) {
+      console.error('Failed to retrieve audit count');
+      res.status(500).json({ error: 'Failed to retrieve audit count' });
+    }
+  };
 }
