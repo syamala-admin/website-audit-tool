@@ -55,4 +55,9 @@ export class AuditRepository {
 
     return (result.changes ?? 0) > 0;
   }
+
+  count(): number {
+    const row = this.db.prepare('SELECT COUNT(*) as count FROM audits').get() as { count: number };
+    return row.count;
+  }
 }

@@ -101,7 +101,21 @@ auditForm.addEventListener('submit', async (event) => {
     auditStatus.textContent = `Audit complete: ${savedAudit.issueCount} issue(s) found.`;
     urlInput.value = '';
 
-    await loadRecentAudits();
+    await async function loadAuditCount() {
+  try {
+    const response = await fetch('/api/audits/count');
+    const data = await response.json();
+    const auditCountElement = document.getElementById('audit-count');
+    if (auditCountElement) {
+      auditCountElement.textContent = `Total audits: ${data.count}`;
+    }
+  } catch (error) {
+    console.error('Failed to load audit count', error);
+  }
+}
+
+loadRecentAudits();
+loadAuditCount();
   } catch (error) {
     console.error(error);
     auditStatus.textContent = 'Audit failed. Please try again.';
