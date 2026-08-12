@@ -1,27 +1,27 @@
 import request from 'supertest';
-import app from '../src/app';
+import { app } from '../src/app';
 
 describe('GET /api/audits/count', () => {
-  it('returns the total number of audits as { count: <number> }', async () => {
-    const response = await request(app).get('/api/audits/count');
+  it('returns a total audits count as { count: <number> }', async () => {
+    const res = await request(app).get('/api/audits/count');
 
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('count');
-    expect(typeof response.body.count).toBe('number');
-    expect(response.body.count).toBeGreaterThanOrEqual(0);
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('count');
+    expect(typeof res.body.count).toBe('number');
+    expect(Number.isInteger(res.body.count)).toBe(true);
+    expect(res.body.count).toBeGreaterThanOrEqual(0);
   });
 
-  it('reflects newly created audits in the count', async () => {
-    const before = await request(app).get('/api/audits/count');
-    const beforeCount = before.body.count;
+  it('count matches the number of audits returned by GET /api/audits', async () => {
+    const [countRes, listRes] = await Promise.all([
+      request(app).get('/api/audits/count'),
+      request(app).get('/api/audits'),
+    ]);
 
-    await request(app)
-      .post('/api/audits')
-      .send({ url: 'https://example.com', issueCount: 2 });
+    expect(countRes.status).toBe(200);
+    expect(listRes.status).toBe(200);
 
-    const after = await request(app).get('/api/audits/count');
-
-    expect(after.status).toBe(200);
-    expect(after.body.count).toBe(beforeCount + 1);
+    const audits = Array.isArray(listRes.body) ? listRes.body : listRes.body.audits;
+    expect(countRes.body.count).toBe(audits.length);
   });
 });
