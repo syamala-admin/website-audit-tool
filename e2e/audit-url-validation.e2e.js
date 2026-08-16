@@ -7,7 +7,7 @@ test('POST /api/audits with an invalid url returns 400 and creates nothing, whil
   const invalidUrl = 'not-a-url';
 
   const invalidResponse = await request.post(`${BASE_URL}/api/audits`, {
-    data: { url: invalidUrl }
+    data: { url: invalidUrl, issueCount: 0 }
   });
 
   expect(invalidResponse.status()).toBe(400);
@@ -28,7 +28,7 @@ test('POST /api/audits with an invalid url returns 400 and creates nothing, whil
   const validUrl = `https://example.com/valid-audit-${Date.now()}`;
 
   const validResponse = await request.post(`${BASE_URL}/api/audits`, {
-    data: { url: validUrl }
+    data: { url: validUrl, issueCount: 0 }
   });
 
   expect(validResponse.ok()).toBeTruthy();
