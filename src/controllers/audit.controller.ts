@@ -11,7 +11,8 @@ export class AuditController {
   getRecentAudits = (req: Request, res: Response): void => {
     try {
       const audits = this.service.getRecentAudits();
-      res.status(200).json(audits);
+      const response = audits.map((audit) => ({ ...audit, created_at: audit.createdAt }));
+      res.status(200).json(response);
     } catch (error) {
       console.error('Failed to retrieve recent audits');
       res.status(500).json({ error: 'Failed to retrieve recent audits' });
@@ -33,7 +34,7 @@ export class AuditController {
 
     try {
       const audit = this.service.recordAudit(url.trim(), issueCount);
-      res.status(201).json(audit);
+      res.status(201).json({ ...audit, created_at: audit.createdAt });
     } catch (error) {
       console.error('Failed to save audit');
       res.status(500).json({ error: 'Failed to save audit' });
