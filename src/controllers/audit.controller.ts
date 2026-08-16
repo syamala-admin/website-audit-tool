@@ -1,6 +1,16 @@
 import { Request, Response } from 'express';
 import { AuditService } from '../services/audit.service';
 
+function isValidUrl(value: string): boolean {
+  try {
+    // eslint-disable-next-line no-new
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export class AuditController {
   private readonly service: AuditService;
 
@@ -23,6 +33,11 @@ export class AuditController {
 
     if (typeof url !== 'string' || url.trim().length === 0) {
       res.status(400).json({ error: 'url is required and must be a non-empty string' });
+      return;
+    }
+
+    if (!isValidUrl(url.trim())) {
+      res.status(400).json({ error: 'url must be a valid URL' });
       return;
     }
 
