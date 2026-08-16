@@ -31,7 +31,10 @@ export function runMigrations(db: Database.Database): void {
   for (const migration of migrations) {
     if (!appliedIds.has(migration.id)) {
       migration.up(db);
-      db.prepare('INSERT INTO migrations (id, applied_at) VALUES (?, ?)').run(
+      // INSERT OR IGNORE: recording an already-applied migration (e.g. a
+      // concurrent run, as parallel tests can trigger) must be a safe
+      // no-op rather than throwing a UNIQUE constraint error.
+      db.prepare('INSERT OR IGNORE INTO migrations (id, applied_at) VALUES (?, ?)').run(
         migration.id,
         new Date().toISOString()
       );
