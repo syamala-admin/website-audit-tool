@@ -33,7 +33,7 @@ test.describe('Recent audits list - created_at display', () => {
 
     const row = page.getByTestId('audit-row').filter({ hasText: uniqueUrl });
     await expect(row).toBeVisible();
-    await expect(row.getByText('4')).toBeVisible();
+    await expect(row.getByText('4 issues')).toBeVisible();
 
     const createdAtLocator = row.getByTestId('audit-created-at');
     await expect(createdAtLocator).toBeVisible();
