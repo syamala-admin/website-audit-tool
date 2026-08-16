@@ -4,6 +4,17 @@ const auditStatus = document.getElementById('audit-status');
 const recentAuditsList = document.getElementById('recent-audits-list');
 const noAuditsMessage = document.getElementById('no-audits-message');
 
+function formatAuditTimestamp(createdAt) {
+  if (!createdAt) {
+    return '';
+  }
+  const date = new Date(createdAt);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+  return date.toLocaleString();
+}
+
 function renderAudits(audits) {
   recentAuditsList.innerHTML = '';
 
@@ -17,7 +28,8 @@ function renderAudits(audits) {
   audits.forEach((audit) => {
     const item = document.createElement('li');
     const textSpan = document.createElement('span');
-    textSpan.textContent = `${audit.url} \u2014 ${audit.issueCount} issue${audit.issueCount === 1 ? '' : 's'}`;
+    const createdAtLabel = formatAuditTimestamp(audit.createdAt);
+    textSpan.textContent = `${audit.url} \u2014 ${audit.issueCount} issue${audit.issueCount === 1 ? '' : 's'}${createdAtLabel ? ` \u2014 ${createdAtLabel}` : ''}`;
     
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Delete';
