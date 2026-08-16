@@ -27,9 +27,15 @@ function renderAudits(audits) {
 
   audits.forEach((audit) => {
     const item = document.createElement('li');
+    item.setAttribute('data-testid', 'audit-row');
     const textSpan = document.createElement('span');
-    const createdAtLabel = formatAuditTimestamp(audit.createdAt);
-    textSpan.textContent = `${audit.url} \u2014 ${audit.issueCount} issue${audit.issueCount === 1 ? '' : 's'}${createdAtLabel ? ` \u2014 ${createdAtLabel}` : ''}`;
+    const createdAtLabel = formatAuditTimestamp(audit.created_at);
+    textSpan.textContent = `${audit.url} \u2014 ${audit.issueCount} issue${audit.issueCount === 1 ? '' : 's'}`;
+
+    const createdAtSpan = document.createElement('span');
+    createdAtSpan.setAttribute('data-testid', 'audit-created-at');
+    createdAtSpan.style.marginLeft = '8px';
+    createdAtSpan.textContent = createdAtLabel;
     
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Delete';
@@ -61,6 +67,7 @@ function renderAudits(audits) {
     });
     
     item.appendChild(textSpan);
+    item.appendChild(createdAtSpan);
     item.appendChild(deleteBtn);
     recentAuditsList.appendChild(item);
   });
